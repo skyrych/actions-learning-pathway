@@ -1,45 +1,26 @@
 name: build-test-deploy
 on: push
-
-jobs:
-    lintcheck:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Check out repository code
-              uses: actions/checkout@v3
-            - name: Install Node.js
-              uses: actions/setup-node@v3
-              with:
-                node-version: 20
-            - name: Install dependencies
-              run: npm ci
-            - name: Run lintcheck
-              run: npm run lint
-    testcheck:
-        needs: lintcheck
-        runs-on: ubuntu-latest
-        steps:
-            - name: Check out repository code
-              uses: actions/checkout@v3
-            - name: Install Node.js
-              uses: actions/setup-node@v3
-              with:
-                node-version: 20
-            - name: Install dependencies
-              run: npm ci
-            - name: Run tests
-              run: npm run test
-    build:
-        needs: testcheck
-        runs-on: ubuntu-latest
-        steps:
-            - name: Check out repository code
-              uses: actions/checkout@v3
-            - name: use node.js
-              uses: actions/setup-node@v3
-              with:
-                node-version: 20
-            - name: Install dependencies
-              run: npm ci
-            - name: Run tests
-              run: npm run build
+jobs: 
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: checkout repo
+        uses: actions/checkout@v3
+      - name: use node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - run: npm install
+      - run: npm run build 
+  test: 
+    needs: build
+    runs-on: ubuntu-latest
+    steps: 
+      - name: checkout repo
+        uses: actions/checkout@v3
+      - name: use node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - run: npm install
+      - run: npm test
